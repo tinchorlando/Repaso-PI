@@ -19,12 +19,14 @@ const postCharacter = async (name,species,origin,image,episode)=>{
         origin,
         image
     })
-    const newEpisode = await Episode.findAll({
-        where:{
-            name:episode,
-        }
-    })
-    newCharacter.setEpisodes(newEpisode)
+    if (episode){
+        const newEpisode = await Episode.findAll({
+            where:{
+                name:episode,
+            }
+        })
+        newCharacter.setEpisodes(newEpisode)
+    }
     return newCharacter;
 }
 const getEpisodes = async ()=>{
