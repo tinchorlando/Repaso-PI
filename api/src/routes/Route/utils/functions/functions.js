@@ -7,7 +7,7 @@ const getAllFromApi = async ()=>{
             id:p.id,
             name:p.name,                        
             species:p.species,
-            origin:p.origin,
+            origin:p.origin.name,
             image:p.image,
             episode:p.episode,
         }
@@ -16,37 +16,25 @@ const getAllFromApi = async ()=>{
     return sortedApi
 }
 const getAllFromDb = async ()=>{
-    const dbData = await Character.findAll();
+    const dbData = await Character.findAll({include:Episode});
     const dbList = await dbData.map(p=>{
         let newChar={
             id: p.dataValues.id,
             name:p.dataValues.name,
             species:p.dataValues.species,
             origin:p.dataValues.origin,
-            image:p.dataValues.image,            
+            image:p.dataValues.image,
+            episode:p.dataValues.episodes.map(p=>{
+                let link = `https://rickandmortyapi.com/api/episode/${p.id}`
+                return link
+            })
         }
         return newChar;
     })
     return dbList
 }
-const episodeImport = async()=>{
-    const check = await Episode.findAll({})
-    if (check.length === 0){
-        console.log('se ingreso al condicional')
-        const episodes = await axios.get('https://rickandmortyapi.com/api/episode')
-        const episodeList = await episodes.data.results.map(p=>{
-            let episode ={
-                id:p.id,
-                name:p.name,
-            }
-            return episode
-        })
-        await Episode.bulkCreate(episodeList)
-    }
-}
 
 module.exports={
     getAllFromApi,
     getAllFromDb,
-    episodeImport,
 }

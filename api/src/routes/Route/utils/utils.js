@@ -1,5 +1,5 @@
 const { Character, Episode } = require ('../../../db.js');
-const { episodeImport , getAllFromApi , getAllFromDb } = require('./functions/functions.js')
+const { getAllFromApi , getAllFromDb } = require('./functions/functions.js')
 
 const getCharacters = async ()=>{
     const api = await getAllFromApi();
@@ -12,25 +12,18 @@ const getCharacters = async ()=>{
     return api
 }
 const postCharacter = async (name,species,origin,image,episode)=>{
-
     const newCharacter = await Character.create({
         name,
         species,
         origin,
         image
     })
-    if (episode){
-        const newEpisode = await Episode.findAll({
-            where:{
-                name:episode,
-            }
-        })
-        newCharacter.setEpisodes(newEpisode)
-    }
+    //episode viene con un array de los id de cada episodio
+    if (episode) await newCharacter.addEpisodes(episode)    
+    
     return newCharacter;
 }
-const getEpisodes = async ()=>{
-    await episodeImport();
+const getEpisodes = async ()=>{    
     const episodes = await Episode.findAll();
     return episodes
 }
