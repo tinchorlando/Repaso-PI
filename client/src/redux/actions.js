@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_ALL , GET_ONE , POST_NEW} from './utils/actionTypes.js';
+import { GET_ALL , GET_ONE , POST_NEW , GET_EPI } from './utils/actionTypes.js';
 export const getAll = ()=>{
     return async (dispatch)=>{
         const characterGet = await axios.get('http://localhost:3001/characters')
@@ -9,6 +9,16 @@ export const getAll = ()=>{
             payload:characters
         })
     }
+}
+export const getEpi =()=>{
+    return async (dispatch)=>{
+    const episodesGet = await axios.get('http://localhost:3001/episodes')
+    const episodes = await episodesGet.data;
+    dispatch({
+        type:GET_EPI,
+        payload:episodes,
+    })
+}
 }
 export const getOne = (name)=>{
     return async (dispatch)=>{
